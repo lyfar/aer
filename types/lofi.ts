@@ -10,16 +10,13 @@ export interface Channel {
 export interface SoundEffect {
   id: string
   name: string
-  icon: any
   file: string
+  icon: any
   isCustom?: boolean
-  isYoutube?: boolean
 }
 
 export interface CustomSoundEffect {
   id: string
   name: string
   file: string
-  isCustom?: boolean
-  isYoutube?: boolean
 }

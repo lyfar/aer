@@ -80,9 +80,7 @@ const EnhancedLofiPlayer = () => {
   >('customSoundEffects', [])
 
   const playerRef = useRef<any>(null)
-  const audioRefs = useRef<{ [key: string]: AudioCache }>({})
   const [activeEffects, setActiveEffects] = useState<Set<string>>(new Set())
-  const [loadingEffects, setLoadingEffects] = useState<Set<string>>(new Set())
   const [isAddingChannel, setIsAddingChannel] = useState(false)
   const [newChannel, setNewChannel] = useState<Channel>({
     name: '',
@@ -112,126 +110,26 @@ const EnhancedLofiPlayer = () => {
   }, [isBrowser])
 
   useEffect(() => {
-    Object.entries(audioRefs.current).forEach(([effectId, cache]) => {
-      if (cache?.audio) {
-        cache.audio.volume = effectVolumes[effectId] * effectsVolume
+    if (typeof window !== 'undefined') {
+      // Get theme from localStorage directly to ensure immediate application
+      const savedTheme = localStorage.getItem('lofi-theme') || 'dark'
+      document.documentElement.dataset.theme = savedTheme
+      if (currentTheme !== savedTheme) {
+        setCurrentTheme(savedTheme)
       }
+    }
+  }, [])
+
+  const toggleEffect = (effectId: string) => {
+    setActiveEffects((prev) => {
+      const newEffects = new Set(prev)
+      if (newEffects.has(effectId)) {
+        newEffects.delete(effectId)
+      } else {
+        newEffects.add(effectId)
+      }
+      return newEffects
     })
-  }, [effectVolumes, effectsVolume])
-
-  // Function to load audio on demand
-  const loadAudio = async (effectId: string) => {
-    const effect = soundEffects.find((e) => e.id === effectId)
-    if (!effect || effect.isYoutube) return
-
-    if (loadingEffects.has(effectId) || audioRefs.current[effectId]?.loaded) {
-      return
-    }
-
-    setLoadingEffects((prev) => new Set(prev).add(effectId))
-
-    try {
-      const audio = new Audio()
-
-      const loadPromise = new Promise<void>((resolve, reject) => {
-        audio.addEventListener('canplaythrough', () => resolve(), {
-          once: true,
-        })
-        audio.addEventListener(
-          'error',
-          (error: ErrorEvent) => {
-            reject(
-              new Error(
-                `Audio loading error: ${error.message || 'Unknown error'}`
-              )
-            )
-          },
-          { once: true }
-        )
-
-        audio.src = effect.file
-        audio.load()
-      })
-
-      await loadPromise
-
-      audio.loop = true
-      audio.volume = effectVolumes[effectId] * effectsVolume
-
-      audioRefs.current[effectId] = {
-        audio,
-        loaded: true,
-      }
-    } catch (error) {
-      console.error(`Failed to load audio for ${effectId}:`, error)
-    } finally {
-      setLoadingEffects((prev) => {
-        const next = new Set(prev)
-        next.delete(effectId)
-        return next
-      })
-    }
-  }
-
-  // Toggle effect function
-  const toggleEffect = async (effectId: string) => {
-    const effect =
-      soundEffects.find((e) => e.id === effectId) ||
-      customEffects.find((e) => e.id === effectId)
-
-    if (!effect) return
-
-    try {
-      if (effect.isYoutube) {
-        // For YouTube effects, just toggle the active state
-        setActiveEffects((prev) => {
-          const newEffects = new Set(prev)
-          if (newEffects.has(effectId)) {
-            newEffects.delete(effectId)
-          } else {
-            newEffects.add(effectId)
-          }
-          return newEffects
-        })
-        return
-      }
-
-      // Handle native audio effects
-      if (!audioRefs.current[effectId]?.loaded) {
-        await loadAudio(effectId)
-      }
-
-      const audioCache = audioRefs.current[effectId]
-      if (!audioCache?.audio) return
-
-      setActiveEffects((prev) => {
-        const newEffects = new Set(prev)
-        if (newEffects.has(effectId)) {
-          newEffects.delete(effectId)
-          audioCache.audio.pause()
-        } else {
-          newEffects.add(effectId)
-          audioCache.audio.play().catch((error) => {
-            console.error('Error playing audio:', error)
-            newEffects.delete(effectId)
-          })
-        }
-        return newEffects
-      })
-    } catch (error) {
-      console.error('Error toggling effect:', error)
-      // Clear loading state and active state on error
-      setLoadingEffects((prev) => {
-        const next = new Set(prev)
-        next.delete(effectId)
-        return next
-      })
-      setActiveEffects((prev) => {
-        const next = new Set(prev)
-        next.delete(effectId)
-        return next
-      })
-    }
   }
 
   const handleProgress = (state: { played: number }) => {
@@ -250,12 +148,6 @@ const EnhancedLofiPlayer = () => {
 
   const handleEffectsVolumeChange = (newVolume: number) => {
     setEffectsVolume(newVolume)
-    // Update all active effect volumes
-    Object.entries(audioRefs.current).forEach(([effectId, cache]) => {
-      if (cache?.audio) {
-        cache.audio.volume = effectVolumes[effectId] * newVolume
-      }
-    })
   }
 
   const handleThemeChange = (theme: string) => {
@@ -441,75 +333,6 @@ const EnhancedLofiPlayer = () => {
     }
   }
 
-  // Add useEffect to initialize and handle theme changes
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      // Get theme from localStorage directly to ensure immediate application
-      const savedTheme = localStorage.getItem('lofi-theme') || 'dark'
-
-      // Apply theme to root element
-      document.documentElement.dataset.theme = savedTheme
-
-      // Update state if different
-      if (currentTheme !== savedTheme) {
-        setCurrentTheme(savedTheme)
-      }
-    }
-  }, []) // Run only on mount
-
-  // Add useEffect to handle theme changes
-  useEffect(() => {
-    if (currentTheme) {
-      // Update root element when theme changes
-      document.documentElement.dataset.theme = currentTheme
-      // Also update localStorage directly
-      localStorage.setItem('lofi-theme', currentTheme)
-    }
-  }, [currentTheme])
-
-  const handleLoadEffect = async (effectId: string, file: string) => {
-    if (audioRefs.current[effectId]?.loaded) return
-
-    setLoadingEffects((prev) => new Set([...prev, effectId]))
-
-    try {
-      const audio = new Audio(file)
-      await audio.load()
-      audio.loop = true
-      audioRefs.current[effectId] = { audio, loaded: true }
-    } catch (error) {
-      console.error(`Error loading effect ${effectId}:`, error)
-    } finally {
-      setLoadingEffects((prev) => {
-        const next = new Set(prev)
-        next.delete(effectId)
-        return next
-      })
-    }
-  }
-
-  const handleToggleEffect = async (effectId: string, file: string) => {
-    if (!audioRefs.current[effectId]?.loaded) {
-      await handleLoadEffect(effectId, file)
-    }
-
-    const audio = audioRefs.current[effectId]?.audio
-    if (!audio) return
-
-    if (activeEffects.has(effectId)) {
-      audio.pause()
-      setActiveEffects((prev) => {
-        const next = new Set(prev)
-        next.delete(effectId)
-        return next
-      })
-    } else {
-      audio.volume = effectVolumes[effectId] * effectsVolume
-      audio.play()
-      setActiveEffects((prev) => new Set([...prev, effectId]))
-    }
-  }
-
   return (
     <div
       className={styles['theme-container']}
@@ -679,7 +502,7 @@ const EnhancedLofiPlayer = () => {
                 currentTheme={currentTheme}
                 customEffects={customEffects}
                 setCustomEffects={setCustomEffects}
-                loadingEffects={loadingEffects}
+                loadingEffects={new Set()}
               />
             </div>
           )}

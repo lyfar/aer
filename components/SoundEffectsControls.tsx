@@ -38,14 +38,12 @@ const SoundEffectsControls: React.FC<SoundEffectsControlsProps> = ({
     id: '',
     name: '',
     file: '',
-    isYoutube: true,
   })
   const [urlError, setUrlError] = useState('')
 
   const allEffects = [
     ...soundEffects.map((effect) => ({
       ...effect,
-      isYoutube: false,
     })),
     ...customEffects.map((effect) => ({
       ...effect,
@@ -83,7 +81,6 @@ const SoundEffectsControls: React.FC<SoundEffectsControlsProps> = ({
       id: effectId,
       name: newEffect.name,
       file: newEffect.file,
-      isYoutube: true,
     }
 
     setCustomEffects([...customEffects, newCustomEffect])
@@ -93,7 +90,7 @@ const SoundEffectsControls: React.FC<SoundEffectsControlsProps> = ({
       [effectId]: defaultVolume,
     })
     setIsAddingEffect(false)
-    setNewEffect({ id: '', name: '', file: '', isYoutube: true })
+    setNewEffect({ id: '', name: '', file: '' })
   }
 
   const handleDeleteEffect = (effectId: string) => {
@@ -119,7 +116,7 @@ const SoundEffectsControls: React.FC<SoundEffectsControlsProps> = ({
             : 'bg-[var(--lofi-card-hover)]'
         }`}
       >
-        {effect.isYoutube && isActive && (
+        {isActive && (
           <div className="hidden">
             <ReactPlayer
               url={effect.file}
