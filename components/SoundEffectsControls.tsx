@@ -178,17 +178,19 @@ const SoundEffectsControls: React.FC<SoundEffectsControlsProps> = ({
           max={1}
           step={0.01}
           value={effectVolumes[effect.id]}
-          onChange={(e) =>
+          onChange={(e) => {
+            if (!isActive && !isLoading) {
+              toggleEffect(effect.id)
+            }
             setEffectVolumes({
               ...effectVolumes,
               [effect.id]: parseFloat(e.target.value),
             })
-          }
-          className="w-full focus:outline-none [&::-moz-range-thumb]:bg-[var(--lofi-accent)] [&::-webkit-slider-thumb]:bg-[var(--lofi-accent)]"
+          }}
+          className="w-full cursor-pointer focus:outline-none [&::-moz-range-thumb]:bg-[var(--lofi-accent)] [&::-webkit-slider-thumb]:bg-[var(--lofi-accent)]"
           style={{
             accentColor: 'var(--lofi-accent)',
           }}
-          disabled={!isActive}
         />
       </div>
     )
