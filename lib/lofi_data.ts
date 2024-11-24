@@ -3,8 +3,6 @@ import {
   Wind,
   Coffee,
   Flame,
-  Monitor,
-  Power,
   Bird,
   Radio,
   Keyboard,
