@@ -314,25 +314,6 @@ const EnhancedLofiPlayer = () => {
     })
   }
 
-  const handleResetDefaults = () => {
-    if (
-      window.confirm(
-        'Are you sure you want to reset to default settings? This will remove all custom channels and effects.'
-      )
-    ) {
-      setCustomChannels([])
-      setHiddenDefaultChannels([])
-      setCustomEffects([])
-      setCurrentChannel(0)
-      setVolume(0.7)
-      setEffectsVolume(0.5)
-      setEffectVolumes(
-        Object.fromEntries(soundEffects.map((effect) => [effect.id, 0.5]))
-      )
-      setCurrentTheme('dark')
-    }
-  }
-
   return (
     <div
       className={styles['theme-container']}
@@ -641,7 +622,6 @@ const EnhancedLofiPlayer = () => {
           onClose={() => setIsSettingsOpen(false)}
           currentTheme={currentTheme}
           setCurrentTheme={handleThemeChange}
-          onResetDefaults={handleResetDefaults}
         />
       </div>
     </div>

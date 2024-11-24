@@ -7,7 +7,6 @@ interface SettingsModalProps {
   onClose: () => void
   currentTheme: string
   setCurrentTheme: (themeId: string) => void
-  onResetDefaults: () => void
 }
 
 const SettingsModal: React.FC<SettingsModalProps> = ({
@@ -15,7 +14,6 @@ const SettingsModal: React.FC<SettingsModalProps> = ({
   onClose,
   currentTheme,
   setCurrentTheme,
-  onResetDefaults,
 }) => {
   const handleResetDefaults = () => {
     if (
