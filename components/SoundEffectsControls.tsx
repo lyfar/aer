@@ -140,11 +140,11 @@ const SoundEffectsControls: React.FC<SoundEffectsControlsProps> = ({
             <button
               onClick={() => toggleEffect(effect.id)}
               disabled={isLoading}
-              className={`rounded-[var(--lofi-button-radius)] p-1.5 shadow-[var(--lofi-card-shadow)] transition-colors focus:outline-none ${
+              className={`rounded-[var(--lofi-button-radius)] p-1.5 shadow-lg transition-all hover:translate-y-[-1px] hover:shadow-xl focus:outline-none active:translate-y-[1px] ${
                 isLoading
                   ? 'opacity-50'
                   : isActive
-                  ? 'bg-[var(--lofi-accent)] text-white'
+                  ? 'bg-[var(--lofi-accent)] text-white shadow-[var(--lofi-accent)]/20'
                   : 'bg-[var(--lofi-button-bg)] text-[var(--lofi-button-text)] hover:bg-[var(--lofi-button-hover)]'
               }`}
             >
@@ -165,7 +165,7 @@ const SoundEffectsControls: React.FC<SoundEffectsControlsProps> = ({
             {effect.isCustom && (
               <button
                 onClick={() => handleDeleteEffect(effect.id)}
-                className="rounded-md bg-[var(--lofi-button-bg)] p-1 text-[var(--lofi-button-text)] hover:bg-[var(--lofi-button-hover)] focus:outline-none"
+                className="rounded-md bg-[var(--lofi-button-bg)] p-1 text-[var(--lofi-button-text)] shadow-lg transition-all hover:translate-y-[-1px] hover:bg-[var(--lofi-button-hover)] hover:shadow-xl focus:outline-none active:translate-y-[1px]"
               >
                 <X size={14} />
               </button>
