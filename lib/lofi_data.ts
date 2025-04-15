@@ -8,6 +8,10 @@ import {
   Keyboard,
   Car,
   Waves,
+  Building2,
+  Train,
+  Store,
+  Moon,
 } from 'lucide-react'
 import { Channel, SoundEffect } from '@/types/lofi'
 
@@ -53,6 +57,44 @@ export const DEFAULT_CHANNELS: Channel[] = [
 export const channels: Channel[] = [...DEFAULT_CHANNELS]
 
 export const soundEffects: SoundEffect[] = [
+  // Hong Kong Sound Effects
+  {
+    id: 'hk_street',
+    name: 'Hong Kong Street',
+    file: 'https://www.youtube.com/watch?v=lavsYcooDg0',
+    icon: Building2,
+  },
+  {
+    id: 'sham_shui_po',
+    name: 'Sham Shui Po',
+    file: 'https://www.youtube.com/watch?v=_GPwDqKpysI',
+    icon: Store,
+  },
+  {
+    id: 'train_ride',
+    name: 'Train Ride',
+    file: 'https://www.youtube.com/watch?v=XX-Lv7-oEdY',
+    icon: Train,
+  },
+  {
+    id: 'market',
+    name: 'Market',
+    file: 'https://www.youtube.com/watch?v=S6pqB7YQVRc',
+    icon: Store,
+  },
+  {
+    id: 'causeway_bay',
+    name: 'Causeway Bay',
+    file: 'https://www.youtube.com/watch?v=MHW7qjGW540',
+    icon: Building2,
+  },
+  {
+    id: 'wan_chai_night',
+    name: 'Wan Chai Night',
+    file: 'https://www.youtube.com/watch?v=uLMC6bL_q38',
+    icon: Moon,
+  },
+  // Default Sound Effects
   {
     id: 'rain',
     name: 'Rain',

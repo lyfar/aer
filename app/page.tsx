@@ -3,7 +3,6 @@
 import React, { useState, useRef, useEffect, useMemo } from 'react'
 import dynamic from 'next/dynamic'
 import { X, Save, Settings } from 'lucide-react'
-import { GitHubIcon } from '@/components/GitHubIcon'
 import { soundEffects, DEFAULT_CHANNELS } from '@/lib/lofi_data'
 import ChannelButtons from '@/components/ChannelButtons'
 import PlaybackControls from '@/components/PlaybackControls'
@@ -56,7 +55,7 @@ const EnhancedLofiPlayer = () => {
   const [played, setPlayed] = useState(0)
   const [currentTheme, setCurrentTheme] = useLocalStorage<string>(
     'lofi-theme',
-    'dark'
+    'cyberpunk'
   )
   const [effectsVolume, setEffectsVolume] = useLocalStorage(
     'lofi-effects-volume',
@@ -319,15 +318,6 @@ const EnhancedLofiPlayer = () => {
       className={styles['theme-container']}
       data-theme={mounted ? currentTheme : 'dark'}
     >
-      <a
-        href="https://github.com/btahir/next-beats"
-        target="_blank"
-        rel="noopener noreferrer"
-        className="fixed right-4 top-4 hidden text-[var(--lofi-text-primary)] transition-opacity hover:opacity-70 lg:block"
-        aria-label="View source on GitHub"
-      >
-        <GitHubIcon />
-      </a>
       <div className="flex min-h-screen w-full items-start justify-center bg-[var(--lofi-background)] p-4 transition-colors duration-500 sm:items-center sm:p-8">
         <div className="w-full max-w-4xl space-y-8 py-4">
           {/* Retro TV */}
